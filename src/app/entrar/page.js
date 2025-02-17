@@ -152,7 +152,7 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="relative mb-8">
+{/*             <div className="relative mb-8">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300"></div>
               </div>
@@ -161,19 +161,19 @@ export default function LoginPage() {
                   ou continuar com
                 </span>
               </div>
-            </div>
+            </div> */}
 
-            <button
+         {/*    <button
               onClick={handleGoogleLogin}
               disabled={loading}
               className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md px-3 py-2 hover:bg-gray-50 transition-colors disabled:bg-gray-100"
             >
-               {/* Icon do Google adicionar no svg abaixo */}
+              
               <svg className="w-5 h-5" viewBox="0 0 24 24">
-                {/* ... SVG paths ... */}
+               
               </svg>
               <span className="text-gray-800">Google</span>
-            </button>
+            </button>  */}
 
             <p className="mt-8 text-center text-xs text-gray-700">
               Ao fazer login, você concorda com nossos{' '}
