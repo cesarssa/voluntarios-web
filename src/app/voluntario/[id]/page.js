@@ -152,7 +152,7 @@ export default function VoluntarioPage({ params }) {
                     <textarea
                       value={formData.message}
                       onChange={(e) => setFormData(prev => ({...prev, message: e.target.value}))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-red-700"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
                       rows="4"
                       required
                       placeholder="Conte-nos por que você quer ser voluntário..."
@@ -167,7 +167,7 @@ export default function VoluntarioPage({ params }) {
                       type="text"
                       value={formData.availability}
                       onChange={(e) => setFormData(prev => ({...prev, availability: e.target.value}))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-red-700"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
                       required
                       placeholder="Ex: Segunda a sexta, períodos disponíveis..."
                     />
