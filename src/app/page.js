@@ -60,7 +60,7 @@ export default function Home() {
 
               <div className="bg-white rounded-xl shadow-lg p-8 flex flex-col md:flex-row items-center gap-8">
                 <div className="md:w-1/2">
-                  <h2 className="text-xl font-semibold mb-4">Faça a diferença!</h2>
+                  <h2 className="text-xl font-semibold mb-4 text-gray-600">Faça a diferença!</h2>
                   <p className="text-gray-600">
                     "Um prato de comida pode significar esperança e dignidade para aqueles que enfrentam a fome diariamente. Juntos, podemos fazer a diferença alimentando não apenas seus corpos, mas também suas almas."
                   </p>
@@ -80,14 +80,14 @@ export default function Home() {
         {/* Sessão Depoimentos */}
         <section className="bg-gray-50 py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-semibold mb-8 px-4">Feedback - Moradores</h2>
+            <h2 className="text-2xl font-semibold mb-8 px-4 text-gray-600">Feedback - Moradores</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {testimonials.map((testimonial) => (
                 <TestimonialCard 
                   key={testimonial.id}
                   quote={testimonial.quote}
                   author={testimonial.author}
-                  image={testimonial.image}
+                  // image={testimonial.image}
                 />
               ))}
             </div>
@@ -108,7 +108,7 @@ export default function Home() {
         </section>
 
         {/* Relatorio Mensal */}
-        <section className="bg-gray-50 py-16">
+  {/*       <section className="bg-gray-50 py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-semibold mb-8">Relatório do mês, na luta diária</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -123,7 +123,7 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
       </main>
 
       <Footer />
