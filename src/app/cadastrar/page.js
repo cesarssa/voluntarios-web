@@ -262,10 +262,19 @@ export default function CadastroPage() {
                 </button>
               </form>
 
-              {/* Resto do código permanece igual... */}
+              <div className="mt-6 text-center">
+                <p className="text-gray-700 text-sm">
+                  Já tem uma conta?{' '}
+                  <Link 
+                    href="/entrar" 
+                    className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline"
+                  >
+                    Entre por aqui
+                  </Link>
+                </p>
+              </div>
             </div>
 
-            {/* ... resto do código ... */}
           </div>
         </div>
       </main>
