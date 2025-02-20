@@ -10,7 +10,7 @@ import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 export default function CadastroPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    name: '', // Novo campo
+    nome: '',               // alterado de name
     email: '',
     password: '',
     confirmPassword: ''
@@ -38,8 +38,8 @@ export default function CadastroPage() {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.name) {
-      newErrors.name = 'Nome é obrigatório';
+    if (!formData.nome) {              // alterado de name
+      newErrors.nome = 'Nome é obrigatório';    // alterado de name
     }
 
     if (!formData.email) {
@@ -77,22 +77,22 @@ export default function CadastroPage() {
           options: {
             emailRedirectTo: `${window.location.origin}/auth/callback`,
             data: {
-              name: formData.name
+              nome: formData.nome     // alterado de name
             }
           }
         });
 
         if (authError) throw authError;
 
-        // Criar perfil na tabela profiles
+        // Criar perfil na tabela perfis
         if (authData?.user) {
           const { error: profileError } = await supabase
-            .from('profiles1')
+            .from('perfis')           // alterado de profiles1
             .insert({
-              user_id: authData.user.id,
-              name: formData.name,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
+              id_usuario: authData.user.id,        // alterado de user_id
+              nome: formData.nome,                 // alterado de name
+              criado_em: new Date().toISOString(),      // alterado de created_at
+              atualizado_em: new Date().toISOString()   // alterado de updated_at
             });
 
           if (profileError) {
@@ -162,23 +162,22 @@ export default function CadastroPage() {
               )}
  
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Novo campo de nome */}
                 <div>
                   <input
                     type="text"
-                    name="name"
+                    name="nome"            // alterado de name
                     placeholder="Digite seu nome completo"
                     className={`w-full px-3 py-2 border text-gray-800 placeholder-gray-500 ${
-                      errors.name ? 'border-red-500' : 'border-gray-300'
+                      errors.nome ? 'border-red-500' : 'border-gray-300'    // alterado de name
                     } rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500`}
-                    value={formData.name}
+                    value={formData.nome}    // alterado de name
                     onChange={handleChange}
                     disabled={loading}
                   />
-                  {errors.name && (
+                  {errors.nome && (    // alterado de name
                     <div className="flex items-center gap-1 mt-1">
                       <AlertCircle className="h-4 w-4 text-red-500" />
-                      <p className="text-red-500 text-sm">{errors.name}</p>
+                      <p className="text-red-500 text-sm">{errors.nome}</p>    // alterado de name
                     </div>
                   )}
                 </div>
@@ -274,7 +273,6 @@ export default function CadastroPage() {
                 </p>
               </div>
             </div>
-
           </div>
         </div>
       </main>

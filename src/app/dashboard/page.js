@@ -6,14 +6,13 @@ import Sidebar from '@/components/Sidebar';
 import Footer from '@/components/Footer';
 import { supabase } from '@/lib/supabase';
 import { ArrowRightCircle, Users, FileText, Calendar, AlertCircle } from 'lucide-react';
-import Link from 'next/link';
 
 export default function DashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
-  const [volunteers, setVolunteers] = useState([]);
+  const [voluntarios, setVoluntarios] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -29,9 +28,9 @@ export default function DashboardPage() {
 
         // Carregar dados do perfil
         const { data: profileData, error: profileError } = await supabase
-          .from('profiles1')
-          .select('name')
-          .eq('user_id', session.user.id)
+          .from('perfis')
+          .select('nome')
+          .eq('id_usuario', session.user.id)
           .single();
 
         if (profileError && profileError.code !== 'PGRST116') {
@@ -40,22 +39,22 @@ export default function DashboardPage() {
 
         setProfile(profileData);
 
-        // Carregar voluntariados do usuário
-        const { data: volunteerData, error: volunteerError } = await supabase
-          .from('volunteers')
+        // Carregar solicitações de voluntariado
+        const { data: voluntariarData, error: voluntariarError } = await supabase
+          .from('voluntariar')
           .select(`
             *,
-            shelter:shelters (
-              id,
-              responsible_name,
-              description
+            abrigos (
+              nome_abrigo,
+              cidade
             )
           `)
-          .eq('user_id', session.user.id)
-          .order('created_at', { ascending: false });
+          .eq('id_usuario', session.user.id)
+          .order('criado_em', { ascending: false });
 
-        if (volunteerError) throw volunteerError;
-        setVolunteers(volunteerData);
+        if (voluntariarError) throw voluntariarError;
+
+        setVoluntarios(voluntariarData);
         
       } catch (error) {
         console.error('Erro ao carregar usuário:', error);
@@ -69,24 +68,23 @@ export default function DashboardPage() {
     getUser();
   }, [router]);
 
-  const getStatusColor = (status) => {
-    const colors = {
-      'Pendente': 'bg-yellow-50 text-yellow-600',
-      'Aprovado': 'bg-green-50 text-green-600',
-      'Rejeitado': 'bg-red-50 text-red-600'
+  const getSituacaoStyle = (situacao) => {
+    const styles = {
+      'Pendente': 'bg-yellow-50 text-yellow-700',
+      'Aprovado': 'bg-green-50 text-green-700',
+      'Rejeitado': 'bg-red-50 text-red-700'
     };
-    return colors[status] || 'bg-gray-50 text-gray-600';
+    return styles[situacao] || 'bg-gray-50 text-gray-700';
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('pt-BR', {
+  const formatarData = (data) => {
+    return new Date(data).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
-    }).format(date);
+    });
   };
 
   if (loading) {
@@ -118,7 +116,7 @@ export default function DashboardPage() {
             {/* Seção de Boas-vindas */}
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <h1 className="text-2xl font-semibold text-gray-800 mb-2">
-                Bem-vindo(a) {profile?.name || ''}
+                Bem-vindo(a) {profile?.nome || ''}
               </h1>
               <p className="text-gray-600">
                 Este é seu painel de controle. Aqui você pode gerenciar todas as suas atividades.
@@ -129,44 +127,49 @@ export default function DashboardPage() {
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Meus Voluntariados</h2>
               
-              {volunteers.length === 0 ? (
-                <div className="text-center py-6">
+              {voluntarios.length === 0 ? (
+                <div className="text-center py-8">
                   <p className="text-gray-500">Você ainda não se voluntariou em nenhum abrigo.</p>
-                  <Link 
-                    href="/lista-abrigos"
-                    className="mt-4 inline-block text-emerald-600 hover:text-emerald-700"
+                  <button 
+                    onClick={() => router.push('/listar-abrigos')}
+                    className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
                   >
-                    Ver lista de abrigos
-                  </Link>
+                    Encontrar Abrigos
+                  </button>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {volunteers.map((volunteer) => (
-                    <div key={volunteer.id} className="p-4 bg-gray-50 rounded-lg">
+                  {voluntarios.map((voluntario) => (
+                    <div 
+                      key={voluntario.id} 
+                      className="p-4 rounded-lg border border-gray-200 hover:border-emerald-200 transition-colors"
+                    >
                       <div className="flex justify-between items-start mb-2">
                         <div>
                           <h3 className="font-medium text-gray-800">
-                            {volunteer.shelter?.responsible_name}
+                            {voluntario.abrigos.nome_abrigo}
                           </h3>
                           <p className="text-sm text-gray-600">
-                            {volunteer.shelter?.description?.substring(0, 100)}
-                            {volunteer.shelter?.description?.length > 100 ? '...' : ''}
+                            {voluntario.abrigos.cidade}
                           </p>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-xs ${getStatusColor(volunteer.status)}`}>
-                          {volunteer.status}
+                        <span className={`px-3 py-1 rounded-full text-sm ${getSituacaoStyle(voluntario.situacao)}`}>
+                          {voluntario.situacao}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center mt-2">
-                        <span className="text-sm text-gray-500">
-                          Cadastrado em: {formatDate(volunteer.created_at)}
-                        </span>
-                        <Link
-                          href={`/voluntario/${volunteer.shelter_id}`}
-                          className="text-emerald-600 hover:text-emerald-700 text-sm"
-                        >
-                          Ver detalhes
-                        </Link>
+                      
+                      <div className="mt-2 text-sm">
+                        <p className="text-gray-600">
+                          <span className="font-medium">Disponibilidade:</span> {voluntario.disponibilidade}
+                        </p>
+                        {voluntario.mensagem && (
+                          <p className="text-gray-600 mt-1">
+                            <span className="font-medium">Mensagem:</span> {voluntario.mensagem}
+                          </p>
+                        )}
+                        <p className="text-gray-500 text-xs mt-2">
+                          Solicitado em: {formatarData(voluntario.criado_em)}
+                        </p>
                       </div>
                     </div>
                   ))}

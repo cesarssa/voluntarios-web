@@ -15,20 +15,21 @@ export default function AbrigoRegistrationPage() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   
-  const [shelterData, setAbrigoData] = useState({
-    responsible_name: '',
-    phone: '',
+  const [abrigoData, setAbrigoData] = useState({
+    nome_responsavel: '',           // alterado de responsible_name
+    nome_abrigo: '',               // novo campo conforme SQL
+    telefone: '',                  // alterado de phone
     email: '',
-    available_hours: '',
-    available_days: '',
-    status: 'Ativo',
-    address: '',
-    neighborhood: '',
-    city: '',
-    zip_code: '',
-    number: '',
-    complement: '',
-    description: '',
+    horario_funcionamento: '',     // alterado de available_hours
+    dias_funcionamento: '',        // alterado de available_days
+    situacao: 'Ativo',            // alterado de status
+    endereco: '',                  // alterado de address
+    bairro: '',                    // alterado de neighborhood
+    cidade: '',                    // alterado de city
+    cep: '',                       // alterado de zip_code
+    numero: '',                    // alterado de number
+    complemento: '',               // alterado de complement
+    descricao: '',                // alterado de description
   });
 
   const [images, setImages] = useState([]);
@@ -101,27 +102,28 @@ export default function AbrigoRegistrationPage() {
         throw new Error('Usuário não autenticado');
       }
 
-      const shelterInsertData = {
-        user_id: user.id,
-        responsible_name: shelterData.responsible_name,
-        phone: shelterData.phone,
-        email: shelterData.email,
-        available_hours: shelterData.available_hours,
-        available_days: shelterData.available_days,
-        status: shelterData.status,
-        address: shelterData.address,
-        neighborhood: shelterData.neighborhood,
-        city: shelterData.city,
-        zip_code: shelterData.zip_code,
-        number: shelterData.number,
-        complement: shelterData.complement,
-        description: shelterData.description,
-        gallery_images: images
+      const abrigoInsertData = {
+        id_usuario: user.id,                           // alterado de user_id
+        nome_responsavel: abrigoData.nome_responsavel,
+        nome_abrigo: abrigoData.nome_abrigo,
+        telefone: abrigoData.telefone,
+        email: abrigoData.email,
+        horario_funcionamento: abrigoData.horario_funcionamento,
+        dias_funcionamento: abrigoData.dias_funcionamento,
+        situacao: abrigoData.situacao,
+        endereco: abrigoData.endereco,
+        bairro: abrigoData.bairro,
+        cidade: abrigoData.cidade,
+        cep: abrigoData.cep,
+        numero: abrigoData.numero,
+        complemento: abrigoData.complemento,
+        descricao: abrigoData.descricao,
+        galeria_imagens: images                        // alterado de gallery_images
       };
 
       const { data, error } = await supabase
-        .from('shelters')
-        .insert([shelterInsertData])
+        .from('abrigos')                              // alterado de shelters
+        .insert([abrigoInsertData])
         .select()
         .single();
 
@@ -158,12 +160,26 @@ export default function AbrigoRegistrationPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div className="lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Contato Responsável
+                    Nome do Responsável
                   </label>
                   <input
                     type="text"
-                    name="responsible_name"
-                    value={shelterData.responsible_name}
+                    name="nome_responsavel"
+                    value={abrigoData.nome_responsavel}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
+                    required
+                  />
+                </div>
+
+                <div className="lg:col-span-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nome do Abrigo
+                  </label>
+                  <input
+                    type="text"
+                    name="nome_abrigo"
+                    value={abrigoData.nome_abrigo}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                     required
@@ -172,12 +188,12 @@ export default function AbrigoRegistrationPage() {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Celular
+                    Telefone
                   </label>
                   <input
                     type="tel"
-                    name="phone"
-                    value={shelterData.phone}
+                    name="telefone"
+                    value={abrigoData.telefone}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                     required
@@ -186,12 +202,12 @@ export default function AbrigoRegistrationPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Horários
+                    Horário de Funcionamento
                   </label>
                   <input
                     type="text"
-                    name="available_hours"
-                    value={shelterData.available_hours}
+                    name="horario_funcionamento"
+                    value={abrigoData.horario_funcionamento}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                   />
@@ -199,12 +215,12 @@ export default function AbrigoRegistrationPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Dias
+                    Dias de Funcionamento
                   </label>
                   <input
                     type="text"
-                    name="available_days"
-                    value={shelterData.available_days}
+                    name="dias_funcionamento"
+                    value={abrigoData.dias_funcionamento}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                   />
@@ -218,7 +234,7 @@ export default function AbrigoRegistrationPage() {
                 <input
                   type="email"
                   name="email"
-                  value={shelterData.email}
+                  value={abrigoData.email}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                   required
@@ -236,8 +252,8 @@ export default function AbrigoRegistrationPage() {
                     </label>
                     <input
                       type="text"
-                      name="address"
-                      value={shelterData.address}
+                      name="endereco"
+                      value={abrigoData.endereco}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                       required
@@ -250,8 +266,8 @@ export default function AbrigoRegistrationPage() {
                     </label>
                     <input
                       type="text"
-                      name="neighborhood"
-                      value={shelterData.neighborhood}
+                      name="bairro"
+                      value={abrigoData.bairro}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                       required
@@ -264,8 +280,8 @@ export default function AbrigoRegistrationPage() {
                     </label>
                     <input
                       type="text"
-                      name="city"
-                      value={shelterData.city}
+                      name="cidade"
+                      value={abrigoData.cidade}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                       required
@@ -279,8 +295,8 @@ export default function AbrigoRegistrationPage() {
                       </label>
                       <input
                         type="text"
-                        name="zip_code"
-                        value={shelterData.zip_code}
+                        name="cep"
+                        value={abrigoData.cep}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                         required
@@ -292,8 +308,8 @@ export default function AbrigoRegistrationPage() {
                       </label>
                       <input
                         type="text"
-                        name="number"
-                        value={shelterData.number}
+                        name="numero"
+                        value={abrigoData.numero}
                         onChange={handleInputChange}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                         required
@@ -307,8 +323,8 @@ export default function AbrigoRegistrationPage() {
                     </label>
                     <input
                       type="text"
-                      name="complement"
-                      value={shelterData.complement}
+                      name="complemento"
+                      value={abrigoData.complemento}
                       onChange={handleInputChange}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"
                     />
@@ -354,8 +370,8 @@ export default function AbrigoRegistrationPage() {
                       Descrição
                     </label>
                     <textarea
-                      name="description"
-                      value={shelterData.description}
+                      name="descricao"
+                      value={abrigoData.descricao}
                       onChange={handleInputChange}
                       rows={4}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800"

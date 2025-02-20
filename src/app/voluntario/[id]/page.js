@@ -1,97 +1,93 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Sidebar from '@/components/Sidebar';
+import { supabase } from '@/lib/supabase';
 
 export default function VoluntarioPage({ params }) {
   const router = useRouter();
-  const [shelter, setShelter] = useState(null);
+  const [abrigo, setAbrigo] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
-    message: '',
-    availability: ''
+    disponibilidade: '',
+    mensagem: ''
   });
 
   useEffect(() => {
-    fetchShelterAndCheckVolunteer();
+    buscarAbrigo();
   }, [params.id]);
 
-  const fetchShelterAndCheckVolunteer = async () => {
+  const buscarAbrigo = async () => {
     try {
-      setLoading(true);
-      
-      // Verificar se usuário está autenticado
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/entrar');
-        return;
-      }
-
-      // Carregar dados do abrigo
-      const { data: shelterData, error: shelterError } = await supabase
-        .from('shelters')
+      const { data, error } = await supabase
+        .from('abrigos')
         .select('*')
         .eq('id', params.id)
         .single();
 
-      if (shelterError) throw shelterError;
-      setShelter(shelterData);
-
-      // Verificar se já é voluntário
-      const { data: volunteerData, error: volunteerError } = await supabase
-        .from('volunteers')
-        .select('*')
-        .eq('shelter_id', params.id)
-        .eq('user_id', session.user.id)
-        .single();
-
-      if (volunteerData) {
-        setSuccess('Você já se cadastrou como voluntário neste abrigo.');
-      }
-
+      if (error) throw error;
+      setAbrigo(data);
     } catch (error) {
-      console.error('Erro:', error);
-      setError('Erro ao carregar informações do abrigo');
+      console.error('Erro ao carregar abrigo:', error);
+      setError('Não foi possível carregar as informações do abrigo');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setSubmitting(true);
-      setError(null);
-
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/entrar');
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        setError('Você precisa estar logado para se voluntariar');
         return;
       }
 
-      const { error } = await supabase.from('volunteers').insert({
-        user_id: session.user.id,
-        shelter_id: params.id,
-        message: formData.message,
-        availability: formData.availability
-      });
+      // Verificar se já existe uma solicitação pendente
+      const { data: existingRequest } = await supabase
+        .from('voluntariar')
+        .select('*')
+        .eq('id_usuario', user.id)
+        .eq('id_abrigo', params.id)
+        .single();
 
-      if (error) throw error;
+      if (existingRequest) {
+        setError('Você já possui uma solicitação para este abrigo');
+        return;
+      }
 
-      setSuccess('Cadastro como voluntário realizado com sucesso!');
-      setFormData({ message: '', availability: '' });
+      const { error: insertError } = await supabase
+        .from('voluntariar')
+        .insert([
+          {
+            id_usuario: user.id,
+            id_abrigo: params.id,
+            disponibilidade: formData.disponibilidade,
+            mensagem: formData.mensagem,
+            situacao: 'Pendente'
+          }
+        ]);
 
+      if (insertError) throw insertError;
+
+      alert('Solicitação de voluntariado enviada com sucesso!');
+      router.push('/dashboard');
     } catch (error) {
-      console.error('Erro ao cadastrar:', error);
-      setError('Erro ao cadastrar como voluntário');
-    } finally {
-      setSubmitting(false);
+      console.error('Erro ao enviar solicitação:', error);
+      setError('Erro ao enviar solicitação. Por favor, tente novamente.');
     }
   };
 
@@ -119,69 +115,79 @@ export default function VoluntarioPage({ params }) {
 
         <main className="flex-1 p-8">
           <div className="max-w-3xl mx-auto">
+            {error && (
+              <div className="bg-red-50 text-red-600 p-4 rounded-md mb-6">
+                {error}
+              </div>
+            )}
+
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h1 className="text-2xl font-semibold text-gray-800 mb-4">
-                Voluntariar-se
+              <h1 className="text-2xl font-semibold text-gray-800 mb-6">
+                Voluntariar-se para {abrigo?.nome_abrigo}
               </h1>
 
-              {shelter && (
-                <div className="mb-6">
-                  <h2 className="text-lg font-medium text-gray-700 mb-2">
-                    {shelter.responsible_name}
-                  </h2>
-                  <p className="text-gray-600">{shelter.description}</p>
+              <div className="mb-6">
+                <h2 className="text-lg font-medium text-gray-700 mb-2">Informações do Abrigo</h2>
+                <div className="bg-gray-50 p-4 rounded-md">
+                  <p className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Responsável:</span> {abrigo?.nome_responsavel}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    <span className="font-medium">Horário:</span> {abrigo?.horario_funcionamento}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium">Dias:</span> {abrigo?.dias_funcionamento}
+                  </p>
                 </div>
-              )}
+              </div>
 
-              {error && (
-                <div className="mb-4 p-3 bg-red-50 text-red-600 rounded">
-                  {error}
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Disponibilidade
+                  </label>
+                  <input
+                    type="text"
+                    name="disponibilidade"
+                    value={formData.disponibilidade}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
+                    placeholder="Ex: Segunda a Sexta, período da tarde"
+                    required
+                  />
                 </div>
-              )}
 
-              {success ? (
-                <div className="mb-4 p-3 bg-green-50 text-green-600 rounded">
-                  {success}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Mensagem para o Abrigo
+                  </label>
+                  <textarea
+                    name="mensagem"
+                    value={formData.mensagem}
+                    onChange={handleInputChange}
+                    rows={4}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
+                    placeholder="Conte-nos por que você quer ser voluntário e qual sua experiência com animais"
+                    required
+                  />
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Mensagem para o abrigo
-                    </label>
-                    <textarea
-                      value={formData.message}
-                      onChange={(e) => setFormData(prev => ({...prev, message: e.target.value}))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
-                      rows="4"
-                      required
-                      placeholder="Conte-nos por que você quer ser voluntário..."
-                    />
-                  </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Disponibilidade
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.availability}
-                      onChange={(e) => setFormData(prev => ({...prev, availability: e.target.value}))}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700"
-                      required
-                      placeholder="Ex: Segunda a sexta, períodos disponíveis..."
-                    />
-                  </div>
-
+                <div className="flex justify-end space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => router.back()}
+                    className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                  >
+                    Voltar
+                  </button>
                   <button
                     type="submit"
-                    disabled={submitting}
-                    className="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md disabled:bg-emerald-300"
+                    className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
                   >
-                    {submitting ? 'Enviando...' : 'Enviar Cadastro'}
+                    Enviar Solicitação
                   </button>
-                </form>
-              )}
+                </div>
+              </form>
             </div>
           </div>
         </main>

@@ -31,7 +31,7 @@ export default function Sidebar() {
           </Link>
 
           <Link
-            href="/lista-abrigos"
+            href="/listar-abrigos"
             className="flex items-center space-x-3 px-3 py-3 text-gray-700 hover:bg-emerald-50 rounded-lg"
           >
             <Heart className="w-6 h-6 text-emerald-700" />
