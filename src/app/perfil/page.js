@@ -13,15 +13,15 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState(null);
   const [profileData, setProfileData] = useState({
-    name: '',
-    phone: '',
+    nome: '',
+    telefone: '',
     email: '',
-    address: '',
-    neighborhood: '',
-    city: '',
-    zip_code: '',
-    number: '',
-    complement: '',
+    endereco: '',
+    bairro: '',
+    cidade: '',
+    cep: '',
+    numero: '',
+    complemento: '',
   });
   const [profileImage, setProfileImage] = useState(null);
   const [error, setError] = useState(null);
@@ -38,9 +38,9 @@ export default function ProfilePage() {
         setUser(session.user);
         
         const { data: profile, error: profileError } = await supabase
-          .from('profiles1')
+          .from('perfis')
           .select('*')
-          .eq('user_id', session.user.id)
+          .eq('id_usuario', session.user.id)
           .single();
 
         if (profileError && profileError.code !== 'PGRST116') {
@@ -49,19 +49,19 @@ export default function ProfilePage() {
 
         if (profile) {
           setProfileData({
-            name: profile.name || '',
-            phone: profile.phone || '',
+            nome: profile.nome || '',
+            telefone: profile.telefone || '',
             email: session.user.email || '',
-            address: profile.address || '',
-            neighborhood: profile.neighborhood || '',
-            city: profile.city || '',
-            zip_code: profile.zip_code || '',
-            number: profile.number || '',
-            complement: profile.complement || '',
+            endereco: profile.endereco || '',
+            bairro: profile.bairro || '',
+            cidade: profile.cidade || '',
+            cep: profile.cep || '',
+            numero: profile.numero || '',
+            complemento: profile.complemento || '',
           });
           
-          if (profile.avatar_url) {
-            setProfileImage(profile.avatar_url);
+          if (profile.url_avatar) {
+            setProfileImage(profile.url_avatar);
           }
         } else {
           setProfileData(prev => ({
@@ -105,10 +105,10 @@ export default function ProfilePage() {
         setProfileImage(publicUrl);
 
         const { error: updateError } = await supabase
-          .from('profiles1')
+          .from('perfis')
           .upsert({
-            user_id: user.id,
-            avatar_url: publicUrl,
+            id_usuario: user.id,
+            url_avatar: publicUrl,
           });
 
         if (updateError) throw updateError;
@@ -137,18 +137,17 @@ export default function ProfilePage() {
       setError(null);
 
       const { error } = await supabase
-        .from('profiles1')
+        .from('perfis')
         .upsert({
-          user_id: user.id,
-          name: profileData.name,
-          phone: profileData.phone,
-          address: profileData.address,
-          neighborhood: profileData.neighborhood,
-          city: profileData.city,
-          zip_code: profileData.zip_code,
-          number: profileData.number,
-          complement: profileData.complement,
-          updated_at: new Date().toISOString(),
+          id_usuario: user.id,
+          nome: profileData.nome,
+          telefone: profileData.telefone,
+          endereco: profileData.endereco,
+          bairro: profileData.bairro,
+          cidade: profileData.cidade,
+          cep: profileData.cep,
+          numero: profileData.numero,
+          complemento: profileData.complemento,
         });
 
       if (error) throw error;
@@ -224,19 +223,19 @@ export default function ProfilePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Nome</label>
                   <input
                     type="text"
-                    name="name"
-                    value={profileData.name}
+                    name="nome"
+                    value={profileData.nome}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-800"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Celular</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
                   <input
                     type="tel"
-                    name="phone"
-                    value={profileData.phone}
+                    name="telefone"
+                    value={profileData.telefone}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-800"
                   />
@@ -260,8 +259,8 @@ export default function ProfilePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Endereço</label>
                   <input
                     type="text"
-                    name="address"
-                    value={profileData.address}
+                    name="endereco"
+                    value={profileData.endereco}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-800"
                   />
@@ -271,8 +270,8 @@ export default function ProfilePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Bairro</label>
                   <input
                     type="text"
-                    name="neighborhood"
-                    value={profileData.neighborhood}
+                    name="bairro"
+                    value={profileData.bairro}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-800"
                   />
@@ -282,8 +281,8 @@ export default function ProfilePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Cidade</label>
                   <input
                     type="text"
-                    name="city"
-                    value={profileData.city}
+                    name="cidade"
+                    value={profileData.cidade}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-800"
                   />
@@ -293,8 +292,8 @@ export default function ProfilePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">CEP</label>
                   <input
                     type="text"
-                    name="zip_code"
-                    value={profileData.zip_code}
+                    name="cep"
+                    value={profileData.cep}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-800"
                   />
@@ -304,8 +303,8 @@ export default function ProfilePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Número</label>
                   <input
                     type="text"
-                    name="number"
-                    value={profileData.number}
+                    name="numero"
+                    value={profileData.numero}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-800"
                   />
@@ -315,8 +314,8 @@ export default function ProfilePage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">Complemento</label>
                   <input
                     type="text"
-                    name="complement"
-                    value={profileData.complement}
+                    name="complemento"
+                    value={profileData.complemento}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-800"
                   />
