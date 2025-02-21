@@ -128,7 +128,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon_do_supabase
 
 
 ### Licença
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+Este projeto está sob a licença MIT.
 
 
 #### Desenvolvido com ❤️ pela equipe do MBA-ES-27-GRUPO-04
