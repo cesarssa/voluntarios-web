@@ -1,5 +1,13 @@
+```
 voluntarios-web
+├─ docs
+│  └─ diagrams
+│     ├─ arquitetura-v1.drawio.xml
+│     ├─ arquitetura-v1.png
+│     ├─ diagrama-entidade-relacionamento-v1.png
+│     └─ diagrama-entidade-relacionamento-v1.xml
 ├─ eslint.config.mjs
+├─ estrutura-arquivos.md
 ├─ jsconfig.json
 ├─ middleware.js
 ├─ next.config.mjs
@@ -47,3 +55,5 @@ voluntarios-web
 │  └─ lib
 │     └─ supabase.js
 └─ tailwind.config.mjs
+
+```
