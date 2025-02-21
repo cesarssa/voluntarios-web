@@ -1,8 +1,10 @@
 ### Voluntários Web
-Sistema de gerenciamento de voluntários e abrigos desenvolvido como parte do MBA em Engenharia de Software.
+Sistema de gerenciamento de voluntários e abrigos desenvolvido como parte do MBA em Engenharia de Software da Faculdade Impacta.
+
 
 ### Objetivo
-Plataforma web para conectar voluntários a abrigos, facilitando o processo de voluntariado e gerenciamento de instituições do terceiro setor.
+Plataforma web para conectar voluntários a abrigos, facilitando o processo de voluntariado e o gerenciamento de instituições do terceiro setor.
+
 
 ### Diagramas
 #### Arquitetura do Sistema
@@ -15,8 +17,8 @@ Plataforma web para conectar voluntários a abrigos, facilitando o processo de v
 
 *[Arquivo fonte Draw.io](./docs/diagrams/diagrama-entidade-relacionamento-v1.xml)*
 
-### Tecnologias
 
+### Tecnologias
 - **Frontend:** Next.js 14
 - **Backend:** Supabase
 - **Banco de Dados:** PostgreSQL
@@ -25,8 +27,8 @@ Plataforma web para conectar voluntários a abrigos, facilitando o processo de v
 - **Estilização:** TailwindCSS
 - **UI Components:** Shadcn/ui
 
-### Funcionalidades
 
+### Funcionalidades
 - ✅ Cadastro e autenticação de usuários
 - ✅ Perfil de voluntários
 - ✅ Cadastro e gerenciamento de abrigos
@@ -84,7 +86,6 @@ voluntarios-web/
 ```
 
 ### Como executar
-
 ```bash
 # Clone o repositório
 git clone https://github.com/terceiro-setor-opensource/mba-es-27-grupo-04.git
@@ -109,12 +110,14 @@ NEXT_PUBLIC_SUPABASE_URL=sua_url_do_supabase
 NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon_do_supabase
 ```
 
+
 ### Principais Diretórios
 - /docs - Documentação e diagramas do projeto
 - /public - Arquivos estáticos
 - /src/app - Páginas e rotas da aplicação
 - /src/components - Componentes React reutilizáveis
 - /src/lib - Configurações e utilidades
+
 
 ### Time
 - Cesar Sousa
@@ -123,10 +126,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon_do_supabase
 - Wallace
 - Thalita Modesto
 
+
 ### Licença
 Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
-### Instituição
-Projeto desenvolvido como parte do MBA em Engenharia de Software da Faculdade Impacta.
 
 #### Desenvolvido com ❤️ pela equipe do MBA-ES-27-GRUPO-04
